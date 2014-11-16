@@ -4,7 +4,7 @@ var router = express.Router();
 var bodyParser     =         require("body-parser");
 
 router.use(bodyParser.urlencoded({ extended: false }));
-// GET request to the root URL
+// GET the list of the data
 router.get('/', function(req, res) {
 	pool.getConnection(function(err, connection) {
 		  connection.query( 'SELECT categoryid as id, categoryname as name FROM category WHERE categorydeleted=0', function(err, rows) {
@@ -19,6 +19,8 @@ router.get('/', function(req, res) {
 	});
 });
 
+
+//GET one document
 router.get('/:id', function(req, res) {
   var documentid = req.params.id;
   pool.getConnection(function(err, connection) {
@@ -34,12 +36,35 @@ router.get('/:id', function(req, res) {
 	});
 });
 
-// POST request to the root URL
+// Create New record
 router.post('/', function(req, res) {
-	//console.log("",req);
-	  
-	  body = req.body.name;
-  	res.send(body);
+	var catName = req.body.name;
+	var currentTimeStamp =  new Date();
+	var data = {categoryname:catName,categorycreatedon:currentTimeStamp,categorycreatedby:1,categorymodifiedon:currentTimeStamp,categorymodifiedby:1,categorydeleted:0 };
+	pool.getConnection(function(err, connection) {
+		  connection.query( 'INSERT INTO category SET ?', data, function(err, result) {
+		    if (err) throw err;
+			    res.send(result);
+			  connection.release();
+		  });
+	});
+
+});
+
+
+// Update the record
+router.post('/:id', function(req, res) {
+	var documentid = req.params.id;
+	var catName = req.body.name;
+	var currentTimeStamp =  new Date();
+	var data = {categoryname:catName,categorymodifiedon:currentTimeStamp,categorymodifiedby:1};
+	pool.getConnection(function(err, connection) {
+		  connection.query( 'UPDATE category SET ? WHERE categoryid ='+documentid+' AND categorydeleted=0', data, function(err, result) {
+		    if (err) throw err;
+			    res.send(result);
+			  connection.release();
+		  });
+	});
 
 });
 
@@ -55,8 +80,18 @@ router.patch('/', function(req, res) {
 });
 
 // DELETE request to the root URL
-router.delete('/', function(req, res) {
-  res.send('/ DELETE OK');
+router.delete('/:id', function(req, res) {
+	var documentid = req.params.id;
+	var currentTimeStamp =  new Date();
+	var data = {categorymodifiedon:currentTimeStamp,categorymodifiedby:1, categorydeleted:1};
+	pool.getConnection(function(err, connection) {
+		  connection.query( 'UPDATE category SET ? WHERE categoryid ='+documentid+' AND categorydeleted=0', data, function(err, result) {
+		    if (err) throw err;
+			    res.send(result);
+			  connection.release();
+		  });
+	});
+  //res.send('/ DELETE OK'+documentid);
 });
 
 // OPTIONS request to the root URL
