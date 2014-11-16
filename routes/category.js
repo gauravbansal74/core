@@ -68,17 +68,6 @@ router.post('/:id', function(req, res) {
 
 });
 
-// PUT request to the root URL
-router.put('/', function(req, res) {
-  res.send('/ PUT OK');
-});
-
-
-// PATCH request to the root URL
-router.patch('/', function(req, res) {
-  res.send('/ PATCH OK');
-});
-
 // DELETE request to the root URL
 router.delete('/:id', function(req, res) {
 	var documentid = req.params.id;
@@ -93,6 +82,19 @@ router.delete('/:id', function(req, res) {
 	});
   //res.send('/ DELETE OK'+documentid);
 });
+
+// PUT request to the root URL
+router.put('/', function(req, res) {
+  res.send('/ PUT OK');
+});
+
+
+// PATCH request to the root URL
+router.patch('/', function(req, res) {
+  res.send('/ PATCH OK');
+});
+
+
 
 // OPTIONS request to the root URL
 router.options('/', function(req, res) {
