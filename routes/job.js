@@ -9,7 +9,7 @@ router.get('/', function(req, res) {
 	res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
 	pool.getConnection(function(err, connection) {
-		  connection.query( 'SELECT id as id, name, description, imageUrl  FROM category WHERE deleted=0 AND enabled=1 AND reviewed=1', function(err, rows) {
+		  connection.query( 'SELECT id, name, keywords, imageUrl,categoryid  FROM jobs WHERE deleted=0 AND enabled=1 AND reviewed=1', function(err, rows) {
 		    if (err) throw err;
 			 if(rows){
 			    res.send(JSON.stringify(rows));
@@ -22,13 +22,13 @@ router.get('/', function(req, res) {
 });
 
 
-//GET one document
+//GET jobs according to category
 router.get('/:id', function(req, res) {
 	res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
   var documentid = req.params.id;
   pool.getConnection(function(err, connection) {
-		  connection.query( 'SELECT categoryid as id, categoryname as name FROM category WHERE categoryid ='+documentid+' AND categorydeleted=0', function(err, rows) {
+		  connection.query( 'SELECT id, name, keywords, imageUrl, categoryid FROM jobs WHERE categoryid ='+documentid+' AND deleted=0 AND enabled=1 AND reviewed=1', function(err, rows) {
 		    if (err) throw err;
 			 if(rows.length > 0){
 			    res.send(JSON.stringify(rows));
@@ -39,6 +39,27 @@ router.get('/:id', function(req, res) {
 		  });
 	});
 });
+
+
+//GET one document
+router.get('/:id/:categoryid', function(req, res) {
+	res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  var documentid = req.params.id;
+  var categoryid = req.params.categoryid;
+  pool.getConnection(function(err, connection) {
+		  connection.query( 'SELECT id, name, keywords, imageUrl, categoryid, body, minExperience, maxExperience, city, state, country, applicationMode, modeSource FROM jobs WHERE id ='+documentid+' AND categoryid= '+categoryid+' AND deleted=0 AND enabled=1 AND reviewed=1', function(err, rows) {
+		    if (err) throw err;
+			 if(rows.length > 0){
+			    res.send(JSON.stringify(rows));
+			  }else{
+			  	res.send('NOEXT - Invaild Request');
+			  }
+			  connection.release();
+		  });
+	});
+});
+
 
 // Create New record
 router.post('/', function(req, res) {

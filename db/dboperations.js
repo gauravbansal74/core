@@ -17,10 +17,4 @@ connection.getConnection(function(err, connection) {
   connection.release();
 });
 
-
-
-
-connection.getConnection(function(err, connection){
-
-});
 module.exports = connection;

@@ -7,15 +7,11 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 var app = express();
-
-// view engine setup
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'html');
-
 // create the object of the routes
 var routes = require('./routes/index');
 var category = require('./routes/category');
 var users = require('./routes/users');
+var job = require('./routes/job');
 
 
 
@@ -33,6 +29,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', routes);
 app.use('/category', category);
 app.use('/users', users);
+app.use('/job',job);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
