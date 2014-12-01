@@ -28,7 +28,7 @@ router.get('/:id', function(req, res) {
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
   var documentid = req.params.id;
   pool.getConnection(function(err, connection) {
-		  connection.query( 'SELECT id, name, keywords, imageUrl, categoryid FROM jobs WHERE categoryid ='+documentid+' AND deleted=0 AND enabled=1 AND reviewed=1', function(err, rows) {
+		  connection.query( 'SELECT id, name, imageUrl, categoryid, companyName FROM jobs WHERE categoryid ='+documentid+' AND deleted=0 AND enabled=1 AND reviewed=1', function(err, rows) {
 		    if (err) throw err;
 			 if(rows.length > 0){
 			    res.send(JSON.stringify(rows));
@@ -48,7 +48,7 @@ router.get('/:id/:categoryid', function(req, res) {
   var documentid = req.params.id;
   var categoryid = req.params.categoryid;
   pool.getConnection(function(err, connection) {
-		  connection.query( 'SELECT id, name, keywords, imageUrl, categoryid, body, minExperience, maxExperience, city, state, country, applicationMode, modeSource FROM jobs WHERE id ='+documentid+' AND categoryid= '+categoryid+' AND deleted=0 AND enabled=1 AND reviewed=1', function(err, rows) {
+		  connection.query( 'SELECT id, name, keywords, imageUrl, categoryid, body,companyName, minExperience, maxExperience, city, state, country, applicationMode, modeSource FROM jobs WHERE id ='+documentid+' AND categoryid= '+categoryid+' AND deleted=0 AND enabled=1 AND reviewed=1', function(err, rows) {
 		    if (err) throw err;
 			 if(rows.length > 0){
 			    res.send(JSON.stringify(rows));
